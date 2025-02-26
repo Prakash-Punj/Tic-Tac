@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <meta name="description" content="Tic Tac Toe game using Html, Css, JavaScript">
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .tic{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .tic h1{
+            font-size: 3rem;
+            background-image: linear-gradient(176deg, rgba(217 0 98 / 58%) 50%, rgba(223 78 9 / 60%) 54%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 1px 1px 9px rgb(4 75 137 / 40%);
+            padding: 2rem 0;
+        }
+        .box{
+            display: grid;
+            grid-template-columns: repeat(3, 6rem);
+            grid-template-rows: repeat(3, 6rem);
+            background-color: rgba(177 128 0 / 1);
+            color: aliceblue;
+            box-shadow: 1px 1px 9px rgb(4 75 137 / 40%);
+            border-radius: 4px;
+            
+        }
+        .blank{
+            width: 6rem;
+            height: 6rem;
+            cursor: pointer;
+            color: black;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #000;
+            border-radius: 4px;
+        }
+        .tic button{
+            border: none;
+            padding: 1rem 3rem;
+            margin: 2rem 0;
+            background-color: rgb(0, 105, 105);
+            box-shadow: 0 0 5px rgb(0, 105, 105);
+            border-radius: 4px;
+            transition: 0.5s;
+            cursor: pointer;
+            font-size: 1rem;
+            color: aliceblue;
+            font-weight: 700;
+        }
+        .tic button:hover{
+            box-shadow: 0 0 50px #0081b3;
+            background-color: rgba(2, 69, 128, 2.788);
+        }
+        .result{
+            font-size: 1.5rem;
+            font-weight: 700;
+            position: absolute;
+            bottom: 0;
+            transform: translateY(65%);
+        }
+
+        @media (max-width: 400px) {
+            html{
+                font-size: 13px;
+            }
+        }
+
+    </style>
+
+</head>
+<body>
+    
+    <div class="tic">
+        <h1>TIC TAC TOE</h1>
+        <div class="box"></div>
+        <button onclick="reset()">Reset</button>
+        <p class="result">Playing...</p>
+    </div>
+
+    <script>
+
+        const box = document.querySelector('.box');
+        const result = document.querySelector('.result');
+        let player = 'X';
+        let smallBox = Array(9).fill('');
+        
+
+        const winner = [ [0, 1, 2], [0, 3, 6], [0, 4, 8], [1, 4, 7], [2, 4, 6], [2, 5, 8], [3, 4, 5], [6, 7, 8]];
+
+    function board(){
+        box.innerHTML = '';
+        smallBox = Array(9).fill('');
+        result.textContent = 'Playing...';
+        player = 'X';
+
+        for(let i = 0; i < 9; i++){
+            const blank = document.createElement('div');
+            blank.classList.add('blank');
+            blank.dataset.index = i;
+            blank.onclick = () => handleClick(i);
+            box.appendChild(blank);
+        }
+    }
+
+        function handleClick(i) {
+            if(smallBox[i] || result.textContent != 'Playing...') return;
+            smallBox[i] = player;
+            box.children[i].textContent = player;
+
+            if(check()){
+                result.textContent = player + ' wins!';
+                result.style.color = 'green';
+                result.style.fontSize = '3rem';
+                result.style.transition = 'transform 0.3s ease-in-out';
+                setTimeout(() => {
+                    result.style.transform = 'translateY(-400%)';
+                }, 10);
+
+                return;
+            }
+            if(!smallBox.includes('')){
+                result.textContent = 'Draw!';
+                result.style.color = 'red';
+                result.style.fontSize = '3rem';
+                result.style.transition = 'transform 0.3s ease-in-out';
+                setTimeout(() => {
+                    result.style.transform = 'translateY(-400%)';
+                }, 10);
+
+                return;
+            } 
+            player = player === 'X' ? 'O' : 'X';
+        }
+
+        function check(){
+            return winner.some(pattern => pattern.every(index => smallBox[index] === player));
+        }
+
+        function reset(){
+            board();
+            result.style.color = 'black';
+            result.style.fontSize = '1.5rem';
+            result.style.transform = 'translateY(65%)';
+        }
+        board();
+
+    </script>
+
+</body>
+</html>
